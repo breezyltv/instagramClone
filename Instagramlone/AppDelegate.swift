@@ -7,15 +7,38 @@
 //
 
 import UIKit
+import Parse
+import Bolts
 
 @UIApplicationMain
+
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Override point for customization after application launch.
+        // Enable storing and querying data from Local Datastore.
+        // Remove this line if you don't want to use Local Datastore features or want to use cachePolicy.
+        Parse.enableLocalDatastore()
+        
+        let parseConfiguration = ParseClientConfiguration(block: { (ParseMutableClientConfiguration) -> Void in
+            ParseMutableClientConfiguration.applicationId = "instagramTIR2O1SMICWA"
+            ParseMutableClientConfiguration.clientKey = "instagramkeyT9IK136ALU77 "
+            ParseMutableClientConfiguration.server = "https://instagramlone.herokuapp.com/1/"
+        })
+        
+        Parse.initializeWithConfiguration(parseConfiguration)
+
+        //call login func, If user has already logged in before, user won't log in again.
+        login()
+        
+//        let testObject = PFObject(className: "TestObject")
+//        testObject["foo"] = "bar"
+//        testObject.saveInBackgroundWithBlock { (success, error) -> Void in
+//            print("Object has been saved.")
+//        }
+        
         return true
     }
 
@@ -40,7 +63,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
+    
+    func login(){
+        //remember user's login
+        let username : String? =  NSUserDefaults.standardUserDefaults().stringForKey("username")
+        
+        //if logged in 
+        if username != nil {
+            let storyboard : UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+            let myTabBar = storyboard.instantiateViewControllerWithIdentifier("tabBar") as! UITabBarController
+            window?.rootViewController = myTabBar
+        }
+    }
 
 }
 
